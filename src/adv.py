@@ -1,7 +1,10 @@
 from room import Room
+from player import Player
+from item import Item
+
+import textwrap
 
 # Declare all the rooms
-
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons"),
@@ -23,7 +26,6 @@ earlier adventurers. The only exit is to the south."""),
 
 
 # Link rooms together
-
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
@@ -33,19 +35,43 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-#
-# Main
-#
+# Create Items
+items = {
+    'flashlight': Item('flashlight', 'Used to light up dark areas'),
+    'shovel': Item('shovel', 'Used to dig up treasure'),
+    'binoculars': Item('binoculars', 'Used to see out on overlook')
+}
+
+# Add items to room
+room['outside'].items.append(items['flashlight'])
+room['overlook'].items.append(items['binoculars'])
+room['treasure'].items.append(items['shovel'])
+
 
 # Make a new player object that is currently in the 'outside' room.
+user = Player('Elijah', room['outside'])
 
 # Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+while True:
+    # * Prints the current room name
+    print(f'\nCurrent Room: {user.current_room} \n')
+
+    # * Prints the current description (the textwrap module might be useful here).
+    for txt in textwrap.wrap(user.current_room.print_description()):
+        print(f'{txt}\n')
+
+    # prints currently held items
+    print(f'\nHeld Items: {user.current_room.list_items()}\n')
+
+    # * Waits for user input and decides what to do.
+    direction = input(
+        'Enter a direction (n, s, e, w), or enter q to Quit: ').lower()
+
+    if direction in ['n', 's', 'e', 'w']:
+        # set user's current room
+        user.current_room = user.move_to(direction, user.current_room)
+        continue
+
+    # If the user enters "q", quit the game.
+    if direction in ['q', 'exit', 'quit', 'stop', 'done', 'clear']:
+        break
