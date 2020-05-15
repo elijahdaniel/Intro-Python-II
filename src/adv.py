@@ -37,11 +37,15 @@ room['treasure'].s_to = room['narrow']
 
 # Create Items
 items = {
-    'flashlight': Item('flashlight', 'Used to light up dark areas')
+    'flashlight': Item('flashlight', 'Used to light up dark areas'),
+    'shovel': Item('shovel', 'Used to dig up treasure'),
+    'binoculars': Item('binoculars', 'Used to see out on overlook')
 }
 
 # Add items to room
-# room['outside'].items.append(items['flashlight'])
+room['outside'].items.append(items['flashlight'])
+room['overlook'].items.append(items['binoculars'])
+room['treasure'].items.append(items['shovel'])
 
 
 # Make a new player object that is currently in the 'outside' room.
@@ -56,6 +60,9 @@ while True:
     for txt in textwrap.wrap(user.current_room.print_description()):
         print(f'{txt}\n')
 
+    # prints currently held items
+    print(f'\nHeld Items: {user.current_room.list_items()}\n')
+
     # * Waits for user input and decides what to do.
     direction = input(
         'Enter a direction (n, s, e, w), or enter q to Quit: ').lower()
@@ -66,5 +73,5 @@ while True:
         continue
 
     # If the user enters "q", quit the game.
-    if direction in ['q', 'exit', 'quit', 'stop', 'done']:
+    if direction in ['q', 'exit', 'quit', 'stop', 'done', 'clear']:
         break
